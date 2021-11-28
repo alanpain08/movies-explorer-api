@@ -18,8 +18,6 @@ const { PORT = 3000, NODE_ENV, DB_URL } = process.env;
 const options = {
   origin: [
     'http://localhost:3000',
-    /* 'http://allmestos.nomoredomains.rocks',
-    'https://allmestos.nomoredomains.rocks', */
   ],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,
@@ -34,14 +32,14 @@ app.use('*', cors(options));
 
 app.use(cookieParser()); // подключаем парсер кук как мидлвэр
 
+app.use(helmet());
+
 mongoose.connect(NODE_ENV === 'production' ? DB_URL : 'mongodb://localhost:27017/filmsdb', {
   useNewUrlParser: true,
 });
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-app.use(helmet());
 
 app.use(limiter);
 
