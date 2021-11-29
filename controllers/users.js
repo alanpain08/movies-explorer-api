@@ -1,4 +1,3 @@
-require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
@@ -11,21 +10,16 @@ const getCurrentUser = (req, res, next) => {
   const myId = req.user._id;
 
   return User.findById(myId)
-    .then((user) => {
-      if (user) {
-        res.send({
-          email: user.email,
-          name: user.name,
-        });
-      }
+    .orFail(() => {
       throw new NotFoundError('Пользователь с указанным _id не найден');
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new BadRequestError('Переданы некорректные данные'));
-      }
-      next(err);
-    });
+    .then((user) => {
+      res.send({
+        email: user.email,
+        name: user.name,
+      });
+    })
+    .catch((err) => next(err));
 };
 
 const createUser = (req, res, next) => {
@@ -46,13 +40,11 @@ const createUser = (req, res, next) => {
       });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new BadRequestError('Переданы некорректные данные при создании пользователя'));
-      }
       if (err.name === 'MongoServerError' && err.code === 11000) {
         next(new ConflictError('Пользователь с указанным email уже существует'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 

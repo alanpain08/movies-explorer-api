@@ -1,6 +1,12 @@
 const { celebrate, Joi } = require('celebrate');
+const validator = require('validator');
 
-const REG_EX = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w.-]*)*\/?$/;
+const validateUrl = (value, helpers) => {
+  if (validator.isURL(value)) {
+    return value;
+  }
+  return helpers.message('Введена некорректная ссылка');
+};
 
 const validateUserUpdate = celebrate({
   body: Joi.object().keys({
@@ -16,9 +22,9 @@ const validateCreateMovie = celebrate({
     duration: Joi.number().required(),
     year: Joi.string().required(),
     description: Joi.string().required(),
-    image: Joi.string().required().pattern(REG_EX),
-    trailer: Joi.string().required().pattern(REG_EX),
-    thumbnail: Joi.string().required().pattern(REG_EX),
+    image: Joi.string().required().custom(validateUrl),
+    trailer: Joi.string().required().custom(validateUrl),
+    thumbnail: Joi.string().required().custom(validateUrl),
     movieId: Joi.number().required(),
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
@@ -35,7 +41,7 @@ const validateRegistration = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required().required(),
-    name: Joi.string().min(2).max(30),
+    name: Joi.string().required().min(2).max(30),
   }),
 });
 
