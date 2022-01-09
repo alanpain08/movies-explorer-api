@@ -50,19 +50,18 @@ const createMovie = (req, res, next) => {
 };
 
 const deleteMovie = (req, res, next) => {
-  const { movieId } = req.params;
+  const userId = req.user._id;
 
-  return Movie.findById(movieId)
+  return Movie.findById(req.params.movieId)
     .orFail(() => new NotFoundError('Нет фильма по данному id'))
     .then((movie) => {
-      if (!movie.owner.equals(req.user._id)) {
+      if (!movie.owner.toString().equals(userId)) {
         next(new ForbiddenError('Нельзя удалять чужие фильмы!'));
-      } else {
-        Movie.deleteOne(movie)
-          .then(() => {
-            res.send(movie);
-          });
       }
+      return Movie.remove({ _id: req.params.movieId })
+        .then(() => {
+          res.send({ message: 'Фильм удален' });
+        });
     })
     .catch(next);
 };

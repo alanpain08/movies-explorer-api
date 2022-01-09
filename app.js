@@ -18,9 +18,13 @@ const { PORT = 3000, NODE_ENV, DB_URL } = process.env;
 
 const options = {
   origin: [
+    'http://mini.kinopoisk.nomoredomains.rocks',
+    'https://mini.kinopoisk.nomoredomains.rocks',
     'http://localhost:3000',
+    'https://localhost:3000',
+    'http://localhost:3001',
   ],
-  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
   preflightContinue: false,
   optionsSuccessStatus: 204,
   allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
