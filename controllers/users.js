@@ -14,10 +14,7 @@ const getCurrentUser = (req, res, next) => {
       throw new NotFoundError('Пользователь с указанным _id не найден');
     })
     .then((user) => {
-      res.send({
-        email: user.email,
-        name: user.name,
-      });
+      res.send(user);
     })
     .catch((err) => next(err));
 };
