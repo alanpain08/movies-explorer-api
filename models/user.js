@@ -18,10 +18,6 @@ const userSchema = new mongoose.Schema({
     minlength: 8,
     maxlength: 30,
     select: false, // хеш пароля пользователя не будет возвращаться из базы
-    validate: {
-      validator: (v) => validator.isStrongPassword(v, [{ minLength: 8 }]),
-      message: 'Пароль должен быть больше 8 символов',
-    },
   },
   name: {
     type: String,
