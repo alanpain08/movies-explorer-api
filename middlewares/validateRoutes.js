@@ -8,6 +8,13 @@ const validateUrl = (value, helpers) => {
   return helpers.message('Введена некорректная ссылка');
 };
 
+const validatePassword = (value, helpers) => {
+  if (validator.isIsStrongPassword(value, [{ minLength: 8 }])) {
+    return value;
+  }
+  return helpers.message('Пароль должен быть больше 8 символов');
+};
+
 const validateUserUpdate = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
@@ -40,7 +47,8 @@ const validateDeleteMovie = celebrate({
 const validateRegistration = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().required().required(),
+    password: Joi.string().min(8).max(30).required()
+      .custom(validatePassword),
     name: Joi.string().required().min(2).max(30),
   }),
 });
@@ -48,7 +56,8 @@ const validateRegistration = celebrate({
 const validateLogin = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().required(),
+    password: Joi.string().min(8).max(30).required()
+      .custom(validatePassword),
   }),
 });
 
