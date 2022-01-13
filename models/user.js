@@ -16,7 +16,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 8,
-    maxlength: 30,
     select: false, // хеш пароля пользователя не будет возвращаться из базы
   },
   name: {
@@ -35,7 +34,7 @@ userSchema.statics.findUserByCredentials = function (email, password) {
       }
 
       return bcrypt.compare(password, user.password) // юзер с переданной почтой найден.
-      // хешируем пароль и сравниваем с тем хешем, который в базе
+        // хешируем пароль и сравниваем с тем хешем, который в базе
         .then((matched) => {
           if (!matched) {
             return Promise.reject(new Error('Неправильные почта или пароль'));
